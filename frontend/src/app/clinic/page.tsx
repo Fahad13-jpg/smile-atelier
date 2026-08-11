@@ -3,6 +3,7 @@ import TheSpace from "@/components/clinic/TheSpace";
 import Overview from "@/components/clinic/Overview";
 import BookingCTA from "@/components/booking/BookingCTA";
 import Container from "@/components/layout/Container";
+import StickyStory from "@/components/clinic/StickyStory";
 
 export default function ClinicPage() {
   return (
@@ -16,9 +17,14 @@ export default function ClinicPage() {
         <Container>
           <p className="max-w-2xl text-foreground-muted">
             We believe great dental care starts with a space that puts you at
-            ease. Natural light, quiet materials, and unhurried appointments
-            are not luxuries here — they&apos;re the standard.
+            ease. Natural light, quiet materials, and unhurried appointments are
+            not luxuries here — they&apos;re the standard.
           </p>
+        </Container>
+      </section>
+      <section className="section">
+        <Container>
+          <StickyStory />
         </Container>
       </section>
       <TheSpace />
