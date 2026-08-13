@@ -9,9 +9,11 @@ export default function BookPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Backend integration comes in Phase 6 (Django REST endpoint).
     setSubmitted(true);
   };
+
+  const inputClass =
+    "w-full border-0 border-b border-border bg-transparent px-1 py-3 focus:outline-none focus:border-accent transition-colors";
 
   return (
     <main>
@@ -26,40 +28,28 @@ export default function BookPage() {
             <div className="max-w-md">
               <p className="font-display text-2xl mb-3">Thank you.</p>
               <p className="text-foreground-muted">
-                This is a demo form — no data was actually sent. Once the
-                backend is connected, this confirms a real appointment
-                request.
+                This is a demo form — no data was actually sent.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="max-w-md space-y-6">
+            <form onSubmit={handleSubmit} className="max-w-lg space-y-8">
               <div>
-                <label htmlFor="name" className="block text-sm mb-2">Full name</label>
-                <input
-                  id="name"
-                  type="text"
-                  required
-                  className="w-full border border-border rounded-lg px-4 py-3 bg-surface focus:outline-2 focus:outline-offset-2"
-                  style={{ outlineColor: "#B8863E" }}
-                />
+                <label htmlFor="name" className="block text-xs uppercase tracking-widest text-foreground-muted mb-2">
+                  Full name
+                </label>
+                <input id="name" type="text" required className={inputClass} />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm mb-2">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  className="w-full border border-border rounded-lg px-4 py-3 bg-surface focus:outline-2 focus:outline-offset-2"
-                  style={{ outlineColor: "#B8863E" }}
-                />
+                <label htmlFor="email" className="block text-xs uppercase tracking-widest text-foreground-muted mb-2">
+                  Email
+                </label>
+                <input id="email" type="email" required className={inputClass} />
               </div>
               <div>
-                <label htmlFor="service" className="block text-sm mb-2">What are you interested in?</label>
-                <select
-                  id="service"
-                  className="w-full border border-border rounded-lg px-4 py-3 bg-surface focus:outline-2 focus:outline-offset-2"
-                  style={{ outlineColor: "#B8863E" }}
-                >
+                <label htmlFor="service" className="block text-xs uppercase tracking-widest text-foreground-muted mb-2">
+                  What are you interested in?
+                </label>
+                <select id="service" className={inputClass}>
                   <option>General checkup</option>
                   <option>Cosmetic consultation</option>
                   <option>Implants</option>
@@ -67,17 +57,14 @@ export default function BookPage() {
                 </select>
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm mb-2">Anything else?</label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  className="w-full border border-border rounded-lg px-4 py-3 bg-surface focus:outline-2 focus:outline-offset-2"
-                  style={{ outlineColor: "#B8863E" }}
-                />
+                <label htmlFor="message" className="block text-xs uppercase tracking-widest text-foreground-muted mb-2">
+                  Anything else?
+                </label>
+                <textarea id="message" rows={3} className={inputClass} />
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center rounded-full bg-accent px-6 py-3 text-sm text-accent-foreground"
+                className="inline-flex items-center rounded-full bg-accent px-8 py-3.5 text-sm text-accent-foreground hover:opacity-90 transition-opacity"
               >
                 Request appointment
               </button>
