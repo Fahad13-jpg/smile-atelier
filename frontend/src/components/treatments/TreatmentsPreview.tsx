@@ -29,13 +29,16 @@ export default function TreatmentsPreview() {
           title="Care tailored to your smile."
         />
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-px bg-border">
-          {treatments.map((t) => (
-            <div key={t.name} className="bg-background p-8">
-              <h3 className="font-display text-xl mb-2">{t.name}</h3>
-              <p className="text-sm text-foreground-muted">{t.desc}</p>
-            </div>
-          ))}
-        </div>
+  {treatments.map((t) => (
+    <div
+      key={t.name}
+      className="group bg-background p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:z-10 relative cursor-pointer"
+    >
+      <h3 className="font-display text-xl mb-2 transition-colors group-hover:text-accent">{t.name}</h3>
+      <p className="text-sm text-foreground-muted">{t.desc}</p>
+    </div>
+  ))}
+</div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
             <p className="text-sm uppercase tracking-widest text-foreground-muted mb-4">

@@ -25,8 +25,11 @@ export default function TreatmentsPage() {
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
             {treatments.map((t) => (
-              <div key={t.name} className="bg-background p-8">
-                <p className="text-xs uppercase tracking-widest text-foreground-muted mb-3">
+              <div
+                key={t.name}
+                className="group bg-background p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:z-10 relative cursor-pointer"
+              >
+                <p className="text-xs uppercase tracking-widest text-foreground-muted mb-3 transition-colors group-hover:text-accent">
                   {t.category}
                 </p>
                 <h3 className="font-display text-xl mb-2">{t.name}</h3>
