@@ -1,16 +1,9 @@
+import Link from "next/link";
 import PageHero from "@/components/ui/PageHero";
 import Container from "@/components/layout/Container";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
 import BookingCTA from "@/components/booking/BookingCTA";
-
-const treatments = [
-  { name: "Cosmetic Whitening", category: "Aesthetics", desc: "Brighten your smile with precision, gentle care that lasts." },
-  { name: "Invisible Aligners", category: "Aesthetics", desc: "Straighten discreetly, at your own pace, with regular check-ins." },
-  { name: "Dental Implants", category: "Implants", desc: "Permanent, natural-feeling tooth replacement built to last." },
-  { name: "Preventive Care", category: "General Care", desc: "Routine care that keeps problems from starting in the first place." },
-  { name: "Root Canal Therapy", category: "General Care", desc: "Modern, comfortable treatment to save a damaged tooth." },
-  { name: "Porcelain Veneers", category: "Aesthetics", desc: "Refined, natural-looking correction for shape and color." },
-];
+import { treatments } from "@/lib/treatments";
 
 export default function TreatmentsPage() {
   return (
@@ -25,16 +18,17 @@ export default function TreatmentsPage() {
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
             {treatments.map((t) => (
-              <div
-                key={t.name}
-                className="group bg-background p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:z-10 relative cursor-pointer"
+              <Link
+                key={t.slug}
+                href={`/treatments/${t.slug}`}
+                className="group bg-background p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:z-10 relative block"
               >
                 <p className="text-xs uppercase tracking-widest text-foreground-muted mb-3 transition-colors group-hover:text-accent">
                   {t.category}
                 </p>
                 <h3 className="font-display text-xl mb-2">{t.name}</h3>
                 <p className="text-sm text-foreground-muted">{t.desc}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </Container>
