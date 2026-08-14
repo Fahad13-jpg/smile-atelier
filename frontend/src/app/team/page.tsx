@@ -5,6 +5,11 @@ import Container from "@/components/layout/Container";
 import BookingCTA from "@/components/booking/BookingCTA";
 import { team } from "@/lib/team";
 
+export const metadata = {
+  title: "Our Team | Lucent Dental Studio",
+  description: "Meet the specialists behind your care.",
+};
+
 export default function TeamPage() {
   return (
     <main>

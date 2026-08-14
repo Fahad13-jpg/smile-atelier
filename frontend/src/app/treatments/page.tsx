@@ -5,6 +5,11 @@ import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
 import BookingCTA from "@/components/booking/BookingCTA";
 import { treatments } from "@/lib/treatments";
 
+export const metadata = {
+  title: "Treatments | Lucent Dental Studio",
+  description: "Care built around your smile — from preventive care to full smile design.",
+};
+
 export default function TreatmentsPage() {
   return (
     <main>

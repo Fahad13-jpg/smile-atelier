@@ -6,6 +6,11 @@ import Container from "@/components/layout/Container";
 import StickyStory from "@/components/clinic/StickyStory";
 import { MapPin, Clock, Phone } from "lucide-react";
 
+export const metadata = {
+  title: "The Clinic | Lucent Dental Studio",
+  description: "A studio built around calm, considered dental care.",
+};
+
 export default function ClinicPage() {
   return (
     <main>

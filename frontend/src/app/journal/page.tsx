@@ -2,6 +2,11 @@ import Image from "next/image";
 import PageHero from "@/components/ui/PageHero";
 import Container from "@/components/layout/Container";
 
+export const metadata = {
+  title: "Journal | Lucent Dental Studio",
+  description: "Notes on care, comfort, and confidence.",
+};
+
 const articles = [
   {
     title: "What to expect at your first visit",
