@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Container from "./Container";
+import { duration, ease } from "@/lib/motion";
 
 const links = [
   { label: "Clinic", href: "/clinic" },
@@ -16,114 +17,204 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const lastScrollY = useRef(0);
   const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  const closeMenu = useCallback(() => setOpen(false), []);
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 40);
-
-      if (y > lastScrollY.current && y > 200) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
-      lastScrollY.current = y;
-    };
-
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
+    closeMenu();
+  }, [pathname, closeMenu]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMenu();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeMenu]);
+
+  const transparent = isHome && !scrolled && !open;
+  const textClass = transparent
+    ? "text-inverse-foreground"
+    : "text-foreground";
+  const mutedClass = transparent
+    ? "text-inverse-foreground/60"
+    : "text-foreground-muted";
+
   return (
-    <header
-      className="sticky top-0 z-50 border-b border-border transition-all duration-300"
-      style={{
-        transform: hidden ? "translateY(-100%)" : "translateY(0)",
-        backgroundColor: scrolled ? "rgba(247,243,238,0.9)" : "rgba(247,243,238,0.6)",
-        backdropFilter: "blur(12px)",
-        padding: scrolled ? "12px 0" : "20px 0",
-      }}
-    >
-      <Container className="flex items-center justify-between">
-        <Link href="/" className="font-display text-xl">
-          Lucent
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative text-sm py-1 transition-colors ${
-                  isActive ? "text-foreground" : "text-foreground-muted hover:text-foreground"
-                }`}
-              >
-                {link.label}
-                {isActive && (
-                  <motion.div
-                    layoutId="navUnderline"
-                    className="absolute -bottom-1 left-0 right-0 h-px bg-accent"
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <Link
-          href="/book"
-          className="hidden md:inline-flex items-center rounded-full bg-accent px-5 py-2.5 text-sm text-accent-foreground hover:opacity-90 transition-opacity"
-        >
-          Book Now
-        </Link>
-
-        <button
-          className="md:hidden"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          <span className="block w-6 h-px bg-foreground mb-1.5" />
-          <span className="block w-6 h-px bg-foreground" />
-        </button>
-      </Container>
-
-      <AnimatePresence>
-        {open && (
-          <motion.nav
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden border-t border-border"
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all ${textClass}`}
+        style={{
+          height: scrolled ? "var(--nav-height-compact)" : "var(--nav-height)",
+          backgroundColor: transparent
+            ? "transparent"
+            : scrolled
+              ? "rgba(245, 241, 234, 0.92)"
+              : "rgba(245, 241, 234, 0.75)",
+          backdropFilter: transparent ? "none" : "blur(16px)",
+          borderBottom: transparent
+            ? "1px solid transparent"
+            : "1px solid var(--color-border-subtle)",
+          transitionDuration: "var(--duration-standard)",
+          transitionTimingFunction: "var(--ease-smooth)",
+        }}
+      >
+        <Container className="h-full flex items-center justify-between">
+          <Link
+            href="/"
+            className="font-display text-xl md:text-2xl tracking-tight z-10"
+            aria-label="Lucent Dental Studio — Home"
           >
-            <Container className="flex flex-col gap-4 py-6">
-              {links.map((link) => (
+            Lucent
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2" aria-label="Main">
+            {links.map((link) => {
+              const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+              return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm"
-                  onClick={() => setOpen(false)}
+                  className={`relative type-body-s py-1 transition-colors ${
+                    isActive ? textClass : `${mutedClass} hover:opacity-100`
+                  }`}
+                  style={!isActive ? { opacity: 0.85 } : undefined}
                 >
                   {link.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="navActive"
+                      className="absolute -bottom-1 left-0 right-0 h-px bg-accent"
+                    />
+                  )}
                 </Link>
-              ))}
-              <Link
-                href="/book"
-                className="mt-2 inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm text-accent-foreground"
-                onClick={() => setOpen(false)}
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-4 z-10">
+            <Link
+              href="/book"
+              className={`hidden md:inline-flex btn-primary !py-2.5 !px-5 !text-xs ${
+                transparent ? "!bg-accent" : ""
+              }`}
+            >
+              Book Appointment
+            </Link>
+
+            <button
+              type="button"
+              className="lg:hidden relative w-8 h-8 flex flex-col items-end justify-center gap-1.5"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen(!open)}
+            >
+              <span
+                className={`block h-px transition-all ${textClass}`}
+                style={{
+                  width: open ? "1.5rem" : "1.25rem",
+                  backgroundColor: "currentColor",
+                  transform: open ? "rotate(45deg) translateY(5px)" : "none",
+                }}
+              />
+              <span
+                className={`block h-px w-6 transition-opacity ${textClass}`}
+                style={{
+                  backgroundColor: "currentColor",
+                  opacity: open ? 0 : 1,
+                }}
+              />
+              <span
+                className={`block h-px transition-all ${textClass}`}
+                style={{
+                  width: open ? "1.5rem" : "1rem",
+                  backgroundColor: "currentColor",
+                  transform: open ? "rotate(-45deg) translateY(-5px)" : "none",
+                }}
+              />
+            </button>
+          </div>
+        </Container>
+      </header>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: duration.standard, ease: ease.out as unknown as number[] }}
+            className="fixed inset-0 z-40 bg-inverse-background text-inverse-foreground grain lg:hidden"
+          >
+            <Container className="h-full flex flex-col justify-center pt-20 pb-12">
+              <nav className="flex flex-col gap-2" aria-label="Mobile">
+                {links.map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
+                    transition={{
+                      delay: 0.08 + i * 0.06,
+                      duration: duration.slow,
+                      ease: ease.smooth as unknown as number[],
+                    }}
+                  >
+                    <Link
+                      href={link.href}
+                      className="block type-display-m py-3 border-b border-white/10"
+                      onClick={closeMenu}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, duration: duration.slow }}
+                className="mt-12"
               >
-                Book Now
-              </Link>
+                <Link href="/book" className="btn-primary w-full justify-center" onClick={closeMenu}>
+                  Book Appointment
+                </Link>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                transition={{ delay: 0.5 }}
+                className="type-caption mt-auto pt-8 text-inverse-muted"
+              >
+                Premium dental care, designed around you.
+              </motion.p>
             </Container>
-          </motion.nav>
+          </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
